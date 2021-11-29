@@ -101,19 +101,19 @@ void loop() {
 
   // pin 7 and 9 are the left side motors
   if (digitalRead(7) == HIGH) {
-    myMotor1->setSpeed(speed);
-    myMotor1->run(FORWARD);
+    myMotor3->setSpeed(speed);
+    myMotor3->run(FORWARD);
     myMotor4->setSpeed(speed);
     myMotor4->run(FORWARD);
 
   } else if (digitalRead(9) == HIGH) {
-    myMotor1->setSpeed(speed);
-    myMotor1->run(BACKWARD);
+    myMotor3->setSpeed(speed);
+    myMotor3->run(BACKWARD);
     myMotor4->setSpeed(speed);
     myMotor4->run(BACKWARD);
   } else {
-    myMotor1->setSpeed(0);
-    myMotor1->run(RELEASE);
+    myMotor3->setSpeed(0);
+    myMotor3->run(RELEASE);
     myMotor4->setSpeed(0);
     myMotor4->run(RELEASE);
 
@@ -122,19 +122,19 @@ void loop() {
   if (digitalRead(8) == HIGH) {
     myMotor2->setSpeed(speed);
     myMotor2->run(FORWARD);
-    myMotor3->setSpeed(speed);
-    myMotor3->run(FORWARD);
+    myMotor1->setSpeed(speed);
+    myMotor1->run(FORWARD);
 
   } else if (digitalRead(10) == HIGH) {
     myMotor2->setSpeed(speed);
     myMotor2->run(BACKWARD);
-    myMotor3->setSpeed(speed);
-    myMotor3->run(BACKWARD);
+    myMotor1->setSpeed(speed);
+    myMotor1->run(BACKWARD);
   } else {
     myMotor2->setSpeed(0);
     myMotor2->run(RELEASE);
-    myMotor3->setSpeed(0);
-    myMotor3->run(RELEASE);
+    myMotor1->setSpeed(0);
+    myMotor1->run(RELEASE);
 
   }
 }
