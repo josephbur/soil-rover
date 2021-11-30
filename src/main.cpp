@@ -15,10 +15,10 @@
 #include <RemoteXY.h>
 
 // RemoteXY PIN settings
-#define PIN_FORWARD_LEFT 5
-#define PIN_BACKWARD_LEFT 9
-#define PIN_FORWARD_RIGHT 6
-#define PIN_BACKWARD_RIGHT 10
+#define PIN_FORWARD_LEFT 2
+#define PIN_BACKWARD_LEFT 7
+#define PIN_FORWARD_RIGHT 4
+#define PIN_BACKWARD_RIGHT 8
 
 // RemoteXY configurate
 #pragma pack(push, 1)
@@ -69,11 +69,6 @@ void setup() {
   pinMode(PIN_FORWARD_RIGHT, OUTPUT);
   pinMode(PIN_BACKWARD_RIGHT, OUTPUT);
 
-  // pinMode(7, INPUT);
-  // pinMode(9, INPUT);
-  // pinMode(8, INPUT);
-  // pinMode(10, INPUT);
-
   RemoteXY.max_speed = 50;
 
   AFMS.begin();
@@ -96,12 +91,12 @@ void loop() {
   sprintf(RemoteXY.max_speed_text, "%u", slider_pos);
 
   // pin 5 and 9 are the left side motors
-  if (digitalRead(5) == HIGH) {
+  if (digitalRead(PIN_FORWARD_LEFT) == HIGH) {
     myMotor3->setSpeed(speed);
     myMotor3->run(FORWARD);
     myMotor4->setSpeed(speed);
     myMotor4->run(FORWARD);
-  } else if (digitalRead(9) == HIGH) {
+  } else if (digitalRead(PIN_BACKWARD_LEFT) == HIGH) {
     myMotor3->setSpeed(speed);
     myMotor3->run(BACKWARD);
     myMotor4->setSpeed(speed);
@@ -113,12 +108,12 @@ void loop() {
     myMotor4->run(RELEASE);
   }
   // pin 6 and 10 are the right side motors
-  if (digitalRead(6) == HIGH) {
+  if (digitalRead(PIN_FORWARD_RIGHT) == HIGH) {
     myMotor2->setSpeed(speed);
     myMotor2->run(FORWARD);
     myMotor1->setSpeed(speed);
     myMotor1->run(FORWARD);
-  } else if (digitalRead(10) == HIGH) {
+  } else if (digitalRead(PIN_BACKWARD_RIGHT) == HIGH) {
     myMotor2->setSpeed(speed);
     myMotor2->run(BACKWARD);
     myMotor1->setSpeed(speed);
