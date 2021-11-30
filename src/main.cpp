@@ -84,13 +84,15 @@ void loop() {
 
   int slider_pos = RemoteXY.max_speed;
 
+  // random light on the topright of UI. no functionality at the moment
+  // set to green
   RemoteXY.led_1_g = 255;
 
   // set the speed based on slider
   uint8_t speed = ceil(slider_pos * 2.55);
+  // set speed text on UI
   sprintf(RemoteXY.max_speed_text, "%u", slider_pos);
 
-  // pin 5 and 9 are the left side motors
   if (digitalRead(PIN_FORWARD_LEFT) == HIGH) {
     myMotor3->setSpeed(speed);
     myMotor3->run(FORWARD);
@@ -107,7 +109,7 @@ void loop() {
     myMotor4->setSpeed(0);
     myMotor4->run(RELEASE);
   }
-  // pin 6 and 10 are the right side motors
+
   if (digitalRead(PIN_FORWARD_RIGHT) == HIGH) {
     myMotor2->setSpeed(speed);
     myMotor2->run(FORWARD);
