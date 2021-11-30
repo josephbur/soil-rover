@@ -69,7 +69,11 @@ void setup() {
   pinMode(PIN_FORWARD_RIGHT, OUTPUT);
   pinMode(PIN_BACKWARD_RIGHT, OUTPUT);
 
+  // set initial speed to 50%
   RemoteXY.max_speed = 50;
+  // random light on the topright of UI. no functionality at the moment
+  // set to green
+  RemoteXY.led_1_g = 255;
 
   AFMS.begin();
 }
@@ -83,10 +87,6 @@ void loop() {
   digitalWrite(PIN_BACKWARD_RIGHT, (RemoteXY.backward_right==0)?LOW:HIGH);
 
   int slider_pos = RemoteXY.max_speed;
-
-  // random light on the topright of UI. no functionality at the moment
-  // set to green
-  RemoteXY.led_1_g = 255;
 
   // set the speed based on slider
   uint8_t speed = ceil(slider_pos * 2.55);
