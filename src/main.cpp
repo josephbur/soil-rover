@@ -1,6 +1,7 @@
 // RemoteXY select connection mode and include library
 #define REMOTEXY_MODE__HARDSERIAL
 
+#include <RemoteXY.h>
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
@@ -11,10 +12,6 @@
 #define REMOTEXY_SERIAL Serial
 #define REMOTEXY_SERIAL_SPEED 9600
 
-#include <SoftwareSerial.h>
-#include <RemoteXY.h>
-
-// RemoteXY PIN settings
 #define PIN_FORWARD_LEFT 2
 #define PIN_BACKWARD_LEFT 7
 #define PIN_FORWARD_RIGHT 4
@@ -24,8 +21,8 @@
 #pragma pack(push, 1)
 uint8_t RemoteXY_CONF[] =
   { 255,5,0,14,0,81,0,13,178,0,
-  130,2,41,25,19,32,138,4,0,47,
-  26,7,28,38,26,65,114,90,1,9,
+  130,2,41,19,19,38,138,4,0,47,
+  21,7,33,38,26,65,114,90,1,9,
   9,67,1,45,53,11,4,38,26,11,
   1,0,5,12,16,16,137,31,226,172,
   134,0,1,0,5,37,16,16,137,31,
@@ -60,9 +57,10 @@ Adafruit_DCMotor *myMotor2 = AFMS.getMotor(2);
 Adafruit_DCMotor *myMotor3 = AFMS.getMotor(3);
 Adafruit_DCMotor *myMotor4 = AFMS.getMotor(4);
 
-
 void setup() {
   RemoteXY_Init();
+
+  AFMS.begin();
 
   pinMode(PIN_FORWARD_LEFT, OUTPUT);
   pinMode(PIN_BACKWARD_LEFT, OUTPUT);
@@ -74,8 +72,6 @@ void setup() {
   // random light on the topright of UI. no functionality at the moment
   // set to green
   RemoteXY.led_1_g = 255;
-
-  AFMS.begin();
 }
 
 void loop() {
@@ -104,9 +100,7 @@ void loop() {
     myMotor4->setSpeed(speed);
     myMotor4->run(BACKWARD);
   } else {
-    myMotor3->setSpeed(0);
     myMotor3->run(RELEASE);
-    myMotor4->setSpeed(0);
     myMotor4->run(RELEASE);
   }
 
@@ -121,9 +115,7 @@ void loop() {
     myMotor1->setSpeed(speed);
     myMotor1->run(BACKWARD);
   } else {
-    myMotor2->setSpeed(0);
     myMotor2->run(RELEASE);
-    myMotor1->setSpeed(0);
     myMotor1->run(RELEASE);
   }
 }
