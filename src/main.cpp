@@ -120,6 +120,12 @@ void goToFor(int dest, int curr) {
   }
 }
 
+void setLED(uint8_t red, uint8_t green, uint8_t blue) {
+  RemoteXY.led_1_r = red;
+  RemoteXY.led_1_g = green;
+  RemoteXY.led_1_b = blue;
+}
+
 void setup() {
   // Debug serial
   // Serial.begin(115200);
@@ -144,9 +150,6 @@ void setup() {
 
   // set initial speed to 50%
   RemoteXY.max_speed = 50;
-  // random light on the topright of UI. no functionality at the moment
-  // set to green
-  RemoteXY.led_1_g = 255;
 }
 
 void loop() {
@@ -200,13 +203,13 @@ void loop() {
   // only control arm when it is engaged
   if (RemoteXY.arm_engage == 1) {
     // when engaged, indicate with LED color change
-    RemoteXY.led_1_b = 255;
+    setLED(0, 132, 80); // spanish green
     // if a positional change happened, move the arm
     if (pos != myServo.read()) {
       goTo(pos);
     }
   } else {
-    RemoteXY.led_1_b = 0;
+    setLED(184, 29, 19); // carnelian red
     if (pos != SERVO_DEFAULT_ANGLE) {
       // default arm position
       RemoteXY.arm_slider = SERVO_DEFAULT_ANGLE / 1.8;
