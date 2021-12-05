@@ -97,8 +97,8 @@ Servo myServo;
 // Soil & Temperature Sensor
 Adafruit_seesaw ss;
 
-// servo write() helpers to avoid too much current draw
-// due to torque
+// servo write() helpers to avoid too much current draw due to torque
+// TODO: generalize for n servos
 void goTo(int dest) {
   int curr = myServo.read();
   if (dest > curr) {
@@ -120,6 +120,7 @@ void goToFor(int dest, int curr) {
   }
 }
 
+// LED color helper for RGB coloring
 void setLED(uint8_t red, uint8_t green, uint8_t blue) {
   RemoteXY.led_1_r = red;
   RemoteXY.led_1_g = green;
@@ -130,6 +131,7 @@ void setup() {
   // Debug serial
   // Serial.begin(115200);
 
+  //initalize remote controller
   RemoteXY_Init();
 
   // initialize motor controller
@@ -142,7 +144,7 @@ void setup() {
   pinMode(PIN_FORWARD_RIGHT, OUTPUT);
   pinMode(PIN_BACKWARD_RIGHT, OUTPUT);
 
-  // set initial arm pos to 171 degrees
+  // init arm position to default angle
   RemoteXY.arm_slider = SERVO_DEFAULT_ANGLE / 1.8;
   myServo.attach(9); // attaches the servo on pin 9 to the servo object
   myServo.write(SERVO_DEFAULT_ANGLE);
@@ -208,6 +210,7 @@ void loop() {
     if (pos != myServo.read()) {
       goTo(pos);
     }
+  // else not engaged
   } else {
     setLED(184, 29, 19); // carnelian red
     if (pos != SERVO_DEFAULT_ANGLE) {
