@@ -2,9 +2,20 @@
     <img src="images/MSU-horiz-reverse.jpg" alt="Montana State University" border="5" />
 </p>
 
-# Soil Rover Project Student Project <br> Montana State University <br> EGEN 310 <br> Code/Electronics: Joseph Burke <br> Chassis/Mechanics: Kenton Sugden
+# Soil Rover Student Project
 
-**Built Using**
+### Class
+EGEN 310R-020<br>
+Fall Semester 2021
+
+### Contributors
+- Code/Electronics
+  - [Joseph Burke](https://github.com/josephbur/)
+- Chassis/Mechanics
+  - Kenton Sugden
+</h3>
+
+### Built Using
 
 - Software
   - [PlatformIO](https://platformio.org/)
@@ -16,10 +27,9 @@
   - [HC-05 Bluetooth Module](https://components101.com/wireless/hc-05-bluetooth-module)
   - [TiankongRC MG995 180 degree Servo](https://components101.com/motors/mg995-servo-motor)
 
-<p align="center">
-    <img src="images/rover.jpg" alt="Rover" />
-</p>
+### Images
 
 <p align="center">
+    <img src="images/rover.jpg" alt="Rover" /><br>
     <img src="images/remote_ui.png" alt="Remote (Mobile) Control UI" />
 </p>
