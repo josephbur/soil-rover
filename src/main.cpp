@@ -14,16 +14,23 @@
 #define REMOTEXY_SERIAL Serial
 #define REMOTEXY_SERIAL_SPEED 9600
 
+// pins assigned to the remote interface for button state
 #define PIN_FORWARD_LEFT 2
 #define PIN_BACKWARD_LEFT 7
 #define PIN_FORWARD_RIGHT 4
 #define PIN_BACKWARD_RIGHT 8
 
+// delay needed after writing a position to servo
+// to avoid brownout
 #define SERVO_DELAY 1000
-#define SERVO_SMALL_DELAY 10
+// small delay is for iteration method of movement. see: goTo()
+#define SERVO_DELAY_SMALL 10
+// default arm angle in degrees
 #define SERVO_DEFAULT_ANGLE 180
 
+// maximum output from soil sensor, used for percentage calcs
 #define SOIL_SENSOR_MAX 2000
+// minimum output from soil sensor
 #define SOIL_SENSOR_MIN 200
 
 // prototypes
@@ -31,7 +38,7 @@ void goTo(int);
 void goToRev(int, int);
 void goToFor(int, int);
 
-// RemoteXY configurate
+// RemoteXY configuration
 #pragma pack(push, 1)
 uint8_t RemoteXY_CONF[] =
   { 255,7,0,59,0,196,0,13,178,0,
@@ -56,7 +63,7 @@ uint8_t RemoteXY_CONF[] =
   6,38,5,11,67,1,0,5,12,6,
   38,5,11 };
 
-// this structure defines all the variables and events of your control interface
+// this structure defines all the variables and events of the control interface
 struct {
     // input variables
   int8_t max_speed; // =0..100 slider position
@@ -84,7 +91,7 @@ struct {
 } RemoteXY;
 #pragma pack(pop)
 
-// DC motors
+// DC motors - Numbers associated with blocks on board
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *myMotor1 = AFMS.getMotor(1);
 Adafruit_DCMotor *myMotor2 = AFMS.getMotor(2);
@@ -106,17 +113,19 @@ void goTo(int dest) {
   } else goToRev(dest, curr);
 }
 
+// reverse
 void goToRev(int dest, int curr) {
   for (int i = curr; i > dest; i--) {
     myServo.write(i - 1);
-    delay(SERVO_SMALL_DELAY);
+    delay(SERVO_DELAY_SMALL);
   }
 }
 
+// forward
 void goToFor(int dest, int curr) {
   for (int i = curr; i < dest; i++) {
     myServo.write(i + 1);
-    delay(SERVO_SMALL_DELAY);
+    delay(SERVO_DELAY_SMALL);
   }
 }
 
@@ -127,6 +136,7 @@ void setLED(uint8_t red, uint8_t green, uint8_t blue) {
   RemoteXY.led_1_b = blue;
 }
 
+// init function, runs once
 void setup() {
   // Debug serial
   // Serial.begin(115200);
@@ -147,6 +157,9 @@ void setup() {
   // init arm position to default angle
   RemoteXY.arm_slider = SERVO_DEFAULT_ANGLE / 1.8;
   myServo.attach(9); // attaches the servo on pin 9 to the servo object
+  // need to explicitly call write() a single time here instead of goTo helper
+  // because read() pulls the last value it received from write() and *NOT* the
+  // value from the servo itself
   myServo.write(SERVO_DEFAULT_ANGLE);
   delay(SERVO_DELAY);
 
@@ -154,6 +167,7 @@ void setup() {
   RemoteXY.max_speed = 50;
 }
 
+// main function, runs infinitely
 void loop() {
   RemoteXY_Handler();
 
@@ -169,7 +183,7 @@ void loop() {
   // soil sensor reading
   uint16_t capread = ss.touchRead(0);
 
-  // temp char arrays for float conversion
+  // temp char arrays for temperature value float conversion
   char tF[10];
   char tC[10];
 
@@ -177,7 +191,7 @@ void loop() {
   dtostrf(tempF, 5, 2, tF);
   dtostrf(tempC, 5, 2, tC);
 
-  // push converted floats to UI
+  // push temperature converted floats to UI
   sprintf(RemoteXY.temperature_F, "%s *F", tF);
   sprintf(RemoteXY.temperature_C, "%s *C", tC);
 
@@ -194,7 +208,7 @@ void loop() {
   // set the arm position based on slider
   uint8_t pos = floor(RemoteXY.arm_slider * 1.80);
 
-  // to avoid touching the ground with the sensor
+  // avoid touching the ground with the sensor
   if (pos < 5) {
     pos = 5;
   }
@@ -220,6 +234,7 @@ void loop() {
     }
   }
 
+  // motor control, reads pin state from defined remotexy pins
   if (digitalRead(PIN_FORWARD_LEFT) == HIGH) {
     myMotor3->setSpeed(speed);
     myMotor3->run(FORWARD);
