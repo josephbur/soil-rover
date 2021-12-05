@@ -1,11 +1,11 @@
 <p align="center">
-    <img style='border:5px solid #000000' src="images/MSU-horiz-reverse.jpg" alt="Montana State University" />
+    <img src="images/MSU-horiz-reverse.jpg" alt="Montana State University" border="5" />
 </p>
 
-# $$\text{Soil Rover - Student Project}$$
-# $$\text{EGEN 310}$$
-# $$\text{Code By: Joseph Burke}$$
+# Soil Rover Project Student Project
+# EGEN 310
+# Code by: Joseph Burke
 
 <p align="center">
-    <img style='border:5px solid #000000' src="images/rover.jpg" alt="Rover" />
+    <img src="images/rover.jpg" alt="Rover" border="5" />
 </p>
