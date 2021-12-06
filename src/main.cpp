@@ -86,7 +86,7 @@ struct {
 } RemoteXY;
 #pragma pack(pop)
 
-// DC motors - Numbers associated with blocks on board
+// DC motors - Numbers associated with motor blocks on pcb
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *myMotor1 = AFMS.getMotor(1);
 Adafruit_DCMotor *myMotor2 = AFMS.getMotor(2);
@@ -99,7 +99,7 @@ Servo myServo;
 // Soil & Temperature Sensor
 Adafruit_seesaw ss;
 
-// servo write() helpers to avoid too much current draw due to torque
+// servo write() helper to avoid too much current draw due to torque
 void goTo(Servo servo, int dest) {
   int curr = servo.read();
 
@@ -124,7 +124,7 @@ void setLED(uint8_t red, uint8_t green, uint8_t blue) {
   RemoteXY.led_1_b = blue;
 }
 
-// init function, runs once
+// init function
 void setup() {
   // Debug serial
   // Serial.begin(115200);
@@ -144,7 +144,7 @@ void setup() {
 
   // init arm position to default angle
   RemoteXY.arm_slider = SERVO_DEFAULT_ANGLE / 1.8;
-  myServo.attach(9); // attaches the servo on pin 9 to the servo object
+  myServo.attach(9); // attaches the servo object to pin 9
   // need to explicitly call write() a single time here instead of goTo helper
   // because read() pulls the last value it received from write() and *NOT* the
   // value from the servo itself
@@ -155,7 +155,7 @@ void setup() {
   RemoteXY.max_speed = 50;
 }
 
-// main function, runs infinitely
+// main function
 void loop() {
   RemoteXY_Handler();
 
@@ -175,22 +175,22 @@ void loop() {
   char tF[10];
   char tC[10];
 
-  // float conversion because arduino hates floats
+  // float-to-string conversion because arduino hates floats
   dtostrf(tempF, 5, 2, tF);
   dtostrf(tempC, 5, 2, tC);
 
-  // push temperature converted floats to UI
+  // push temperature strings to UI
   sprintf(RemoteXY.temperature_F, "%s *F", tF);
   sprintf(RemoteXY.temperature_C, "%s *C", tC);
 
-  // set wet meter
+  // convert sensor reading to a value between 0-100 and push to UI meter
   RemoteXY.wet_meter = (int8_t)(capread / (SOIL_SENSOR_MAX / 100));
-  // set wet text
+  // push normal sensor reading to UI
   sprintf(RemoteXY.wet_text, "%u", capread);
 
   // set the speed based on slider
   uint8_t speed = floor(RemoteXY.max_speed * 2.55);
-  // set speed text on UI
+  // push speed text to UI
   sprintf(RemoteXY.max_speed_text, "%u", RemoteXY.max_speed);
 
   // set the arm position based on slider
