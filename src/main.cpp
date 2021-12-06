@@ -33,11 +33,6 @@
 // minimum output from soil sensor
 #define SOIL_SENSOR_MIN 200
 
-// prototypes
-void goTo(int);
-void goToRev(int, int);
-void goToFor(int, int);
-
 // RemoteXY configuration
 #pragma pack(push, 1)
 uint8_t RemoteXY_CONF[] =
@@ -105,27 +100,20 @@ Servo myServo;
 Adafruit_seesaw ss;
 
 // servo write() helpers to avoid too much current draw due to torque
-// TODO: generalize for n servos
-void goTo(int dest) {
-  int curr = myServo.read();
-  if (dest > curr) {
-    goToFor(dest, curr);
-  } else goToRev(dest, curr);
-}
+void goTo(Servo servo, int dest) {
+  int curr = servo.read();
 
-// reverse
-void goToRev(int dest, int curr) {
-  for (int i = curr; i > dest; i--) {
-    myServo.write(i - 1);
-    delay(SERVO_DELAY_SMALL);
-  }
-}
-
-// forward
-void goToFor(int dest, int curr) {
-  for (int i = curr; i < dest; i++) {
-    myServo.write(i + 1);
-    delay(SERVO_DELAY_SMALL);
+  // check to see which direction the arm needs to go
+  if (curr < dest) {
+    for (int i = curr; i < dest; i++) {
+      servo.write(i + 1);
+      delay(SERVO_DELAY_SMALL);
+    }
+  } else {
+    for (int i = curr; i > dest; i--) {
+      servo.write(i - 1);
+      delay(SERVO_DELAY_SMALL);
+    }
   }
 }
 
@@ -222,7 +210,7 @@ void loop() {
     setLED(0, 132, 80); // spanish green
     // if a positional change happened, move the arm
     if (pos != myServo.read()) {
-      goTo(pos);
+      goTo(myServo, pos);
     }
   // else not engaged
   } else {
@@ -230,7 +218,7 @@ void loop() {
     if (pos != SERVO_DEFAULT_ANGLE) {
       // default arm position
       RemoteXY.arm_slider = SERVO_DEFAULT_ANGLE / 1.8;
-      goTo(SERVO_DEFAULT_ANGLE);
+      goTo(myServo, SERVO_DEFAULT_ANGLE);
     }
   }
 
