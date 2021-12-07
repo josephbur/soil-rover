@@ -215,7 +215,7 @@ void loop() {
     }
   } else { // else not engaged
     setLED(184, 29, 19); // carnelian red
-    if (pos != SERVO_DEFAULT_ANGLE) {
+    if (pos != SERVO_DEFAULT_ANGLE && arm_init == 1) {
       // default arm position
       RemoteXY.arm_slider = SERVO_DEFAULT_ANGLE / 1.8;
       goTo(myServo, SERVO_DEFAULT_ANGLE);
