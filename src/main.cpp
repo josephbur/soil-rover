@@ -194,11 +194,6 @@ void loop() {
   // set the arm position based on slider
   uint8_t pos = floor(RemoteXY.arm_slider * 1.80);
 
-  // avoid touching the ground with the sensor
-  if (pos < 5) {
-    pos = 5;
-  }
-
   // set arm position text on UI
   sprintf(RemoteXY.arm_pos_text, "%u", pos);
 
