@@ -182,7 +182,7 @@ void loop() {
   sprintf(RemoteXY.temperature_C, "%s *C", tC);
 
   // convert sensor reading to a value between 0-100 and push to UI meter
-  RemoteXY.wet_meter = (int8_t)(capread / (SOIL_SENSOR_MAX / 100));
+  RemoteXY.wet_meter = (int8_t)((capread + SOIL_SENSOR_MIN) / (SOIL_SENSOR_MAX / 100));
   // push normal sensor reading to UI
   sprintf(RemoteXY.wet_text, "%u", capread);
 
