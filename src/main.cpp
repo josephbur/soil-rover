@@ -29,9 +29,9 @@
 #define SERVO_DEFAULT_ANGLE 180
 
 // maximum output from soil sensor, used for percentage calcs
-#define SOIL_SENSOR_MAX 2000
+#define SOIL_SENSOR_MAX 1000
 // minimum output from soil sensor
-#define SOIL_SENSOR_MIN 200
+#define SOIL_SENSOR_MIN 300
 
 // RemoteXY configuration
 #pragma pack(push, 1)
@@ -99,6 +99,9 @@ Servo myServo;
 // Soil & Temperature Sensor
 Adafruit_seesaw ss;
 
+// Misc variables
+int arm_init = 0;
+
 // servo write() helper to avoid too much current draw due to torque
 void goTo(Servo servo, int dest) {
   int curr = servo.read();
@@ -145,11 +148,6 @@ void setup() {
   // init arm position to default angle
   RemoteXY.arm_slider = SERVO_DEFAULT_ANGLE / 1.8;
   myServo.attach(9); // attaches the servo object to pin 9
-  // need to explicitly call write() a single time here instead of goTo helper
-  // because read() pulls the last value it received from write() and *NOT* the
-  // value from the servo itself
-  myServo.write(SERVO_DEFAULT_ANGLE);
-  delay(SERVO_DELAY);
 
   // set initial speed to 50%
   RemoteXY.max_speed = 50;
@@ -209,11 +207,18 @@ void loop() {
     // when engaged, indicate with LED color change
     setLED(0, 132, 80); // spanish green
     // if a positional change happened, move the arm
-    if (pos != myServo.read()) {
+    if (arm_init == 0){
+      // need to explicitly call write() a single time here instead of goTo helper
+      // because read() pulls the last value it received from write() and *NOT* the
+      // value from the servo itself
+      myServo.write(SERVO_DEFAULT_ANGLE);
+      arm_init = 1;
+      delay(SERVO_DELAY);
+    }
+    else if (pos != myServo.read()) {
       goTo(myServo, pos);
     }
-  // else not engaged
-  } else {
+  } else { // else not engaged
     setLED(184, 29, 19); // carnelian red
     if (pos != SERVO_DEFAULT_ANGLE) {
       // default arm position
