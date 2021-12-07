@@ -28,10 +28,10 @@
 // default arm angle in degrees
 #define SERVO_DEFAULT_ANGLE 180
 
-// maximum output from soil sensor, used for percentage calcs
-#define SOIL_SENSOR_MAX 1000
-// minimum output from soil sensor
-#define SOIL_SENSOR_MIN 300
+// soil sensor output rough max for wet meter (actual output - minimum)
+#define WET_METER_MAX 500
+// roughly minimum output from soil sensor
+#define WET_METER_MIN 300
 
 // RemoteXY configuration
 #pragma pack(push, 1)
@@ -181,7 +181,7 @@ void loop() {
   sprintf(RemoteXY.temperature_C, "%s *C", tC);
 
   // convert sensor reading to a value between 0-100 and push to UI meter
-  RemoteXY.wet_meter = (int8_t)((capread + SOIL_SENSOR_MIN) / (SOIL_SENSOR_MAX / 100));
+  RemoteXY.wet_meter = (int8_t)((capread - WET_METER_MIN) / (WET_METER_MAX / 100));
   // push normal sensor reading to UI
   sprintf(RemoteXY.wet_text, "%u", capread);
 
@@ -200,8 +200,7 @@ void loop() {
   if (RemoteXY.arm_engage == 1) {
     // when engaged, indicate with LED color change
     setLED(0, 132, 80); // spanish green
-    // if a positional change happened, move the arm
-    if (arm_init == 0){
+    if (arm_init == 0) { // initialize arm on first button press
       myServo.attach(9); // attaches the servo object to pin 9
       // need to explicitly call write() a single time here instead of goTo helper
       // because read() pulls the last value it received from write() and *NOT* the
@@ -209,16 +208,17 @@ void loop() {
       myServo.write(SERVO_DEFAULT_ANGLE);
       arm_init = 1;
       delay(SERVO_DELAY);
-    }
-    else if (pos != myServo.read()) {
+    } else if (pos != myServo.read()) { // if a positional change happened, move the arm
       goTo(myServo, pos);
     }
   } else { // else not engaged
     setLED(184, 29, 19); // carnelian red
-    if (pos != SERVO_DEFAULT_ANGLE && arm_init == 1) {
+    if (pos != SERVO_DEFAULT_ANGLE) {
       // default arm position
       RemoteXY.arm_slider = SERVO_DEFAULT_ANGLE / 1.8;
-      goTo(myServo, SERVO_DEFAULT_ANGLE);
+      if (arm_init == 1) { // ignore unless arm servo was initialized
+        goTo(myServo, SERVO_DEFAULT_ANGLE);
+      }
     }
   }
 
