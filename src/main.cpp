@@ -242,14 +242,12 @@ void loop() {
     myMotor2->setSpeed(speed);
     myMotor2->run(FORWARD);
     myMotor1->setSpeed(speed);
-    // myMotor1->run(FORWARD); // change for faulty motor block
-    myMotor1->run(BACKWARD);
+    myMotor1->run(FORWARD);
   } else if (digitalRead(PIN_BACKWARD_RIGHT) == HIGH) {
     myMotor2->setSpeed(speed);
     myMotor2->run(BACKWARD);
-    // myMotor1->setSpeed(speed);
-    // myMotor1->run(BACKWARD); // change for faulty motor block
-    myMotor1->run(RELEASE);
+    myMotor1->setSpeed(speed);
+    myMotor1->run(BACKWARD);
   } else {
     myMotor2->run(RELEASE);
     myMotor1->run(RELEASE);
